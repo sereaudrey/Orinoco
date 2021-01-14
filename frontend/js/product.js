@@ -1,6 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
-let request= new 0();
+let request= new XMLHttpRequest();
+//localStorage.clear();
 request.onreadystatechange= function(){
     if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
         let product = JSON.parse(this.response);

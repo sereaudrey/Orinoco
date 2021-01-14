@@ -34,7 +34,7 @@ document.getElementById("buttonCommand").addEventListener('click', (event) => {
         products: [
             basket.forEach(productId => {
                 localStorage.getItem('basket');
-            }
+            })
         ]
     };
     request.open("POST", `http://localhost:3000/api/cameras/order`, true);
