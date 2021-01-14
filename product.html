@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="frontend/css/style.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
+        <title>Orinoco</title>
+    </head>
+
+    <body>
+        <header> 
+            <div class="container-fluid">
+                <div class="row">
+                    <nav class="col navbar navbar-expand-lg">
+                        <a href="index.html">
+                            <img class="logo" src="frontend/images/logo_orinoco.png" width="250" height="100" alt="logo site">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div id="navbarContent" class="collapse navbar-collapse">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="panier.html"> Panier (<span id="basketCount"></span>)
+                                        <i class="fas fa-shopping-basket"></i>
+                                    </a>
+                                </li> 
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div id="product"></div>
+        </div>
+        
+        
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            let request = new XMLHttpRequest();
+            // localStorage.clear();
+            request.onreadystatechange = function() {
+                if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                    let product = JSON.parse(this.response);
+                    console.log(product);
+                    const productContainer = document.getElementById('product');
+                    productContainer.innerHTML += `
+                        <div class="col-12">
+                            <div class="card mb-4">
+                                <img class="card-img-top" src="${product.imageUrl}" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">${product.description}</p>
+                                    <p class="text-right">${product.price/100} €</p>
+                                    <select id="lenses" name="lenses">
+                                        ${getOptions(product.lenses)}
+                                    </select>
+                                    <button type="button" class="btn-primary" id="buttonBasket" 
+                                    class="add-to-cart" data-id="${productId}" data-name="Lentilles" data-price="${product.price/100} €" data-url="/product/">Ajouter au panier</button>                                    
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    // Ajout de l'évènement sur btn
+                    document.getElementById("buttonBasket").addEventListener('click', (event) => {
+                        event.preventDefault;
+
+                        //Panier du client
+                        let basket = JSON.parse(localStorage.getItem('basket')) === null ? [] : JSON.parse(localStorage.getItem('basket'));
+                        let lense = document.getElementById('lenses').value;
+                        let isAlreadyExist = false;
+                        let positionInArray = null;
+                        basket.forEach((camera, index) => {
+                            if (camera.id === productId && camera.lense === lense) {
+                                isAlreadyExist = true;
+                                positionInArray = index;
+                            }
+                        });
+
+                        if (isAlreadyExist && positionInArray !== null) {
+                            let cameraToUpdate = basket[positionInArray];
+                            cameraToUpdate.quantity = cameraToUpdate.quantity + 1;
+
+                            basket[positionInArray] = cameraToUpdate;
+                        } else {
+                            let cameraToAdd = {
+                                id: productId,
+                                name: product.name,
+                                price: product.price,
+                                lense: lense,
+                                quantity: 1,
+                            };
+
+                            basket.push(cameraToAdd);
+                        }
+
+                        localStorage.setItem('basket', JSON.stringify(basket));
+
+                        console.log(localStorage.getItem('basket'));
+                    });
+                }
+            };
+
+            request.open('GET', `http://localhost:3000/api/cameras/${productId}`);
+            request.send();
+
+            function getOptions(lenses) {
+                let options = '';
+                lenses.forEach(lense => {
+                    options += `<option name="${lense}">${lense}</option>`;
+                });
+                return options;
+            }
+        </script>
+        <script>
+            let basketCount = document.getElementById('basketCount');
+            basketCount.innerHTML = JSON.parse(localStorage.getItem('basket')).length;
+        </script>
+    </body>
+</html>
