@@ -24,3 +24,5 @@ request.onreadystatechange= function(){
 request.open("GET", "http://localhost:3000/api/cameras");
 request.send();
 
+let basketCount = document.getElementById('basketCount');
+basketCount.innerHTML = JSON.parse(localStorage.getItem('basket')).length;

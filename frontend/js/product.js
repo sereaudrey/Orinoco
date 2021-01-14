@@ -58,3 +58,6 @@ function getOptions(lenses) {
     });
     return options;
 }
+
+let basketCount = document.getElementById('basketCount');
+basketCount.innerHTML = JSON.parse(localStorage.getItem('basket')).length;
