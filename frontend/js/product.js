@@ -5,6 +5,7 @@ let request= new XMLHttpRequest();
 request.onreadystatechange= function(){
     if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
         let product = JSON.parse(this.response);
+        console.log(product);
         const productContainer = document.getElementById('product');
         productContainer.innerHTML += `
             <div class="col-12">
@@ -16,12 +17,6 @@ request.onreadystatechange= function(){
                         <p class="text-right">${product.price/100} €</p>
                         <select name="lenses">
                             ${getOptions(product.lenses)}
-                        </select>
-
-                        <label for="q">Quantité: </label>
-                        <select id="qt" name="q">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
                         </select>
                         <button type="button" class="btn-primary" id="buttonBasket" 
                         class="add-to-cart" data-id="${productId}" data-name="Lentilles" data-price="${product.price/100} €" data-url="/product/">Ajouter au panier</button>                                    
@@ -35,16 +30,36 @@ request.onreadystatechange= function(){
             
             //Panier du client
             let basket = JSON.parse(localStorage.getItem('basket')) === null ? [] : JSON.parse(localStorage.getItem('basket'));
-            
-            //Ajout d'un article dans le panier
-            let camerasPanier = {
-                nom: product.name,
-                prix: product.price,
-                id: productId,
+            let lense = document.getElementById('lenses').value;
+            let isAlreadyExist = false;
+            let positionInArray = null;
+            basket.forEach((camera, index) => {
+                if (camera.id === productId && camera.lense === lense) {
+                    isAlreadyExist = true;
+                    positionInArray = index;
+                }
+            });
+
+            if (isAlreadyExist && positionInArray !== null) {
+                let cameraToUpdate = basket[positionInArray];
+                cameraToUpdate.quantity = cameraToUpdate.quantity + 1;
+
+                basket[positionInArray] = cameraToUpdate;
+            } else {
+                let cameraToAdd = {
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    lense: lense,
+                    quantity: 1,
+                };
+
+                basket.push(cameraToAdd);
             }
 
-            basket.push(camerasPanier);
             localStorage.setItem('basket', JSON.stringify(basket));
+
+            console.log(localStorage.getItem('basket'));
         });
     }
 };

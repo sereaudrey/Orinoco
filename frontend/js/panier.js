@@ -9,7 +9,7 @@ request.onreadystatechange= function(){
 };
 
 let basket = JSON.parse(localStorage.getItem('basket')) === null ? [] : JSON.parse(localStorage.getItem('basket'));
-
+console.table(basket);
 basket.forEach(product => {
     document.getElementById("cart-tablebody").innerHTML += `
         <tr>
@@ -23,6 +23,10 @@ basket.forEach(product => {
 // Ajout de l'évènement sur btn
 document.getElementById("buttonCommand").addEventListener('click', (event) => {
     event.preventDefault;
+    const ids = [];
+    basket.forEach(product => {
+        ids.push(product.id);
+    })
     const body = {
         contact: {
             firstName: document.getElementById("prenom").value,
@@ -31,15 +35,12 @@ document.getElementById("buttonCommand").addEventListener('click', (event) => {
             city: document.getElementById("ville").value,
             email: document.getElementById("mail").value,
         },
-        products: [
-            basket.forEach(productId => {
-                localStorage.getItem('basket');
-            })
-        ]
+        products: ids
     };
+    console.log(body);
     request.open("POST", `http://localhost:3000/api/cameras/order`, true);
     request.setRequestHeader('Content-type', 'application/json');
-    request.send(JSON.stringify(body));
+    //request.send(JSON.stringify(body));
 });
 
 let basketCount = document.getElementById('basketCount');
