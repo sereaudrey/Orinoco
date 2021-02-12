@@ -1,11 +1,11 @@
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
-let request= new XMLHttpRequest();
-//localStorage.clear();
-request.onreadystatechange= function(){
-    if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
-        let product = JSON.parse(this.response);
-        console.log(product);
+
+// /order-confirmation.html?orderId='1234'&firstname='Audrey'&total='123'
+axios.get(`http://localhost:3000/api/cameras/${productId}`)
+    .then(function (response) {
+        console.log(response);
+        const product = response.data;
         const productContainer = document.getElementById('product');
         productContainer.innerHTML += `
             <div class="col-12">
@@ -15,7 +15,7 @@ request.onreadystatechange= function(){
                         <h5 class="card-title">${product.name}</h5>
                         <p class="card-text">${product.description}</p>
                         <p class="text-right">${product.price/100} €</p>
-                        <select name="lenses">
+                        <select id="lenses" name="lenses">
                             ${getOptions(product.lenses)}
                         </select>
                         <button type="button" class="btn-primary" id="buttonBasket" 
@@ -61,19 +61,16 @@ request.onreadystatechange= function(){
 
             console.log(localStorage.getItem('basket'));
         });
-    }
-};
+            
 
-request.open('GET', `http://localhost:3000/api/cameras/${productId}`);
-request.send();
+        function getOptions(lenses) {
+            let options = '';
+            lenses.forEach(lense => {
+                options += `<option name="${lense}">${lense}</option>`;
+            });
+            return options;
+        }
+    })
 
-function getOptions(lenses) {
-    let options = '';
-    lenses.forEach(lense => {
-        options += `<option name="${lense}">${lense}</option>`;
-    });
-    return options;
-}
 
-let basketCount = document.getElementById('basketCount');
-basketCount.innerHTML = JSON.parse(localStorage.getItem('basket')).length;
+

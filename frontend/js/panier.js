@@ -1,3 +1,11 @@
+// Envoyer la requête
+
+
+
+
+
+
+
 
 let request = new XMLHttpRequest();
 request.onreadystatechange= function(){
@@ -38,11 +46,9 @@ document.getElementById("buttonCommand").addEventListener('click', (event) => {
         products: ids
     };
     console.log(body);
-    request.open("POST", `http://localhost:3000/api/cameras/order`, true);
-    request.setRequestHeader('Content-type', 'application/json');
+    axios.post("http://localhost:3000/api/cameras/order", JSON.stringify(body))
+    
     //request.send(JSON.stringify(body));
 });
 
-let basketCount = document.getElementById('basketCount');
-basketCount.innerHTML = JSON.parse(localStorage.getItem('basket')).length;
 
