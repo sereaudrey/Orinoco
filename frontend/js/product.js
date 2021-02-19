@@ -1,3 +1,5 @@
+
+// Construction de l'URL avec les paramètres 
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
 
@@ -70,7 +72,8 @@ axios.get(`http://localhost:3000/api/cameras/${productId}`)
             });
             return options;
         }
-    })
+    });
+;
 
 
 

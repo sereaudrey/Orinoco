@@ -1,37 +1,24 @@
-// Envoyer la requête
-
-
-
-
-
-
-
-
-let request = new XMLHttpRequest();
-request.onreadystatechange= function(){
-    if (this.readyState === XMLHttpRequest.DONE && this.status === 201) {
-        let response = JSON.stringify(this.response);
-        console.log(response);
-        // response.contact / response.products / response.order_id
-    }
-};
-
+// Afficher les produits dans le panier
 let basket = JSON.parse(localStorage.getItem('basket')) === null ? [] : JSON.parse(localStorage.getItem('basket'));
-console.table(basket);
+let total = 0;
 basket.forEach(product => {
+    total += (product.price/100) * product.quantity;
     document.getElementById("cart-tablebody").innerHTML += `
         <tr>
             <td>${product.name}</td>
             <td>${product.quantity}</td>
             <td>${product.lense}</td>
-            <td>${(product.price/100)*product.quantity}€</td>
+            <td>${(product.price/100) * product.quantity}€</td>
         </tr>
     `
 });
+document.getElementById('total').innerHTML += total;
+
 // Ajout de l'évènement sur btn
 document.getElementById("buttonCommand").addEventListener('click', (event) => {
     event.preventDefault;
     const ids = [];
+    
     basket.forEach(product => {
         ids.push(product.id);
     })
@@ -45,10 +32,11 @@ document.getElementById("buttonCommand").addEventListener('click', (event) => {
         },
         products: ids
     };
-    console.log(body);
-    axios.post("http://localhost:3000/api/cameras/order", JSON.stringify(body))
-    
-    //request.send(JSON.stringify(body));
+
+    // Envoyer la requête
+    axios.post('http://localhost:3000/api/cameras/order', body)
+        .then(function (response) {
+            window.location.replace(`confirmation.html?orderId=${response.data.orderId}&total=${total}&firstname=${response.data.contact.firstName}`);
+        });
+    ;
 });
-
-

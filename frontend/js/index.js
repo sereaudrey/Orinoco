@@ -22,3 +22,4 @@ axios.get("http://localhost:3000/api/cameras")
     .catch(function (error) {
         console.error(error);
     })
+;
