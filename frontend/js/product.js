@@ -3,7 +3,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
 
-// /order-confirmation.html?orderId='1234'&firstname='Audrey'&total='123'
+// Requête pour afficher les caractéristiques du produit sélectionné
 axios.get(`http://localhost:3000/api/cameras/${productId}`)
     .then(function (response) {
         console.log(response);
@@ -20,7 +20,7 @@ axios.get(`http://localhost:3000/api/cameras/${productId}`)
                         <select id="lenses" name="lenses">
                             ${getOptions(product.lenses)}
                         </select>
-                        <button type="button" class="btn-primary" id="buttonBasket" 
+                        <button type="button" class="button" id="buttonBasket" 
                         class="add-to-cart" data-id="${productId}" data-name="Lentilles" data-price="${product.price/100} €" data-url="/product/">Ajouter au panier</button>                                    
                     </div>
                 </div>

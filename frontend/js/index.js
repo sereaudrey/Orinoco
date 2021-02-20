@@ -12,7 +12,7 @@ axios.get("http://localhost:3000/api/cameras")
                             <h5 class="card-title">${product.name}</h5>
                             <p class="card-text">${product.description}</p>
                             <p class="text-right">${product.price/100} €</p>
-                            <a href="product.html?id=${product._id}" class="btn btn-primary">En savoir plus</a>
+                            <a href="product.html?id=${product._id}" class="button">En savoir plus</a>
                         </div>
                     </div>
                 </div>
