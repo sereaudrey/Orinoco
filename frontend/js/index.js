@@ -1,7 +1,6 @@
 // Requête pour récupérer l'API
 axios.get("http://localhost:3000/api/cameras")
     .then(function (response) {
-        console.log(response);
         const productContainer = document.getElementById('product-list');
         response.data.forEach(product => {
             productContainer.innerHTML += `
